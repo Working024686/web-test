@@ -1,0 +1,1087 @@
+/* ==========================================================================
+   CSS Reset & Variables (Cloud Tasks Premium Theme)
+   ========================================================================== */
+:root {
+  /* Font Families */
+  --font-heading: 'Outfit', 'Inter', 'Noto Sans TC', sans-serif;
+  --font-body: 'Inter', 'Noto Sans TC', sans-serif;
+
+  /* Colors - Modern, harmonious gradient colors */
+  --color-primary: #2563eb;       /* Modern royal blue */
+  --color-primary-hover: #1d4ed8;
+  --color-accent-blue: #06b6d4;   /* Cyan glow */
+  --color-accent-purple: #8b5cf6; /* Indigo/Purple */
+  
+  --color-bg-dark: #090d16;       /* Ultra dark space blue */
+  --color-bg-darker: #05070c;
+  
+  --color-text-main: #f8fafc;     /* White/slate-50 */
+  --color-text-muted: #94a3b8;    /* Slate-400 */
+  --color-text-dark: #1e293b;     /* Slate-800 */
+  
+  /* Glassmorphism parameters */
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-glow: rgba(37, 99, 235, 0.4);
+  --glass-blur: 24px;
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --border-radius-lg: 24px;
+  --border-radius-md: 16px;
+  --border-radius-sm: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Background Dynamics & Glows
+   ========================================================================== */
+.bg-gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 50% 50%, #0d1b2e 0%, var(--color-bg-darker) 100%);
+  z-index: -3;
+}
+
+.bg-glow {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.25;
+  z-index: -2;
+  pointer-events: none;
+  animation: glow-float 20s infinite alternate ease-in-out;
+}
+
+.bg-glow-1 {
+  background: radial-gradient(circle, var(--color-primary) 0%, rgba(37,99,235,0) 70%);
+  top: -10%;
+  right: 10%;
+}
+
+.bg-glow-2 {
+  background: radial-gradient(circle, var(--color-accent-purple) 0%, rgba(139,92,246,0) 70%);
+  bottom: -10%;
+  left: 10%;
+  animation-delay: -5s;
+}
+
+@keyframes glow-float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, 30px) scale(1.1);
+  }
+  100% {
+    transform: translate(-30px, -50px) scale(0.9);
+  }
+}
+
+/* ==========================================================================
+   Glassmorphism Styles
+   ========================================================================== */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--glass-shadow);
+  padding: 40px;
+  width: 100%;
+  max-width: 460px;
+  transition: transform var(--transition-normal), border var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* ==========================================================================
+   Layout Containers & Page Sections
+   ========================================================================== */
+#app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  z-index: 1;
+}
+
+.view-section {
+  display: none;
+  width: 100%;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.view-section.active {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   1. Landing Screen (歡迎首頁)
+   ========================================================================== */
+.landing-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 40px;
+}
+
+.landing-icon-container {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.landing-icon-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110%;
+  height: 110%;
+  background: radial-gradient(circle, rgba(37,99,235,0.4) 0%, rgba(37,99,235,0) 70%);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.landing-icon-box {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+}
+
+.landing-icon-svg {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.landing-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+  background: linear-gradient(to bottom, #ffffff 60%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.landing-subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 36px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Buttons (Premium Feel)
+   ========================================================================== */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #1e5cf2 0%, #1041b6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 15px 24px;
+  border-radius: var(--border-radius-md);
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 25%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  transition: 0.75s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.btn-primary:hover::after {
+  left: 125%;
+  transition: 0.75s;
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.icon-sparkles {
+  width: 16px;
+  height: 16px;
+  animation: sparkle-pulse 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes sparkle-pulse {
+  0% { transform: scale(0.9) rotate(0deg); opacity: 0.8; }
+  100% { transform: scale(1.2) rotate(15deg); opacity: 1; }
+}
+
+.btn-secondary {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-main);
+  padding: 13px 20px;
+  border-radius: var(--border-radius-md);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--transition-fast), border var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-fast);
+}
+
+.btn-link:hover {
+  color: var(--color-text-main);
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-icon-only {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--border-radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all var(--transition-fast);
+}
+
+.btn-icon-only:hover {
+  color: #ef4444; /* Light red on logout/delete */
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* ==========================================================================
+   2. Auth Screen (登入/註冊)
+   ========================================================================== */
+.auth-card {
+  padding: 35px 30px;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 28px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--border-radius-sm);
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.auth-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  padding: 10px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab.active {
+  background: var(--glass-bg-hover);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  padding-left: 2px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--color-text-muted);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.input-wrapper input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-main);
+  padding: 13px 16px 13px 46px;
+  border-radius: var(--border-radius-md);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.input-wrapper input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.input-wrapper input:focus + .input-icon {
+  color: var(--color-primary);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-divider span {
+  padding: 0 10px;
+}
+
+/* ==========================================================================
+   3. Todo Main Screen (待辦事項清單)
+   ========================================================================== */
+.todo-card {
+  max-width: 580px;
+  padding: 30px;
+}
+
+.todo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-purple) 100%);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.logo-icon i {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+.logo-area h2 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent-blue) 0%, var(--color-primary) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.95rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.user-status {
+  font-size: 0.72rem;
+  color: var(--color-accent-blue);
+  background: rgba(6, 182, 212, 0.1);
+  padding: 1px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 1px;
+}
+
+/* Progress bar system */
+.progress-section {
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.progress-percentage {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-accent-blue);
+}
+
+.progress-bar-container {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent-blue));
+  border-radius: 4px;
+  transition: width var(--transition-normal) ease;
+}
+
+.progress-count {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+/* Add Todo input form */
+.todo-form {
+  margin-bottom: 24px;
+}
+
+.todo-form .input-wrapper input {
+  padding: 15px 56px 15px 20px;
+}
+
+.btn-add {
+  position: absolute;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-blue) 100%);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-add:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.45);
+}
+
+.btn-add:active {
+  transform: scale(0.95);
+}
+
+/* Filter tabs styling */
+.task-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 12px;
+}
+
+.filter-tab {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all var(--transition-fast);
+}
+
+.filter-tab:hover {
+  color: var(--color-text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.filter-tab.active {
+  background: rgba(37, 99, 235, 0.15);
+  color: white;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+/* Todo List layout */
+.todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Custom Scrollbar for list container */
+.todo-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.todo-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Todo items styling */
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 14px 18px;
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-fast);
+  animation: slide-in 0.3s ease forwards;
+}
+
+.todo-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.todo-item-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+/* Checkbox customization */
+.todo-checkbox-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.todo-checkbox-wrapper input {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.custom-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-text-muted);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all var(--transition-fast);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.todo-checkbox-wrapper:hover .custom-checkbox {
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+}
+
+.todo-checkbox-wrapper input:checked + .custom-checkbox {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-blue) 100%);
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.checkbox-check-icon {
+  width: 14px;
+  height: 14px;
+  color: white;
+  stroke-width: 3px;
+  opacity: 0;
+  transform: scale(0.6) rotate(-10deg);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.todo-checkbox-wrapper input:checked + .custom-checkbox .checkbox-check-icon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.todo-text {
+  font-size: 0.95rem;
+  color: var(--color-text-main);
+  transition: all var(--transition-normal);
+  word-break: break-all;
+  user-select: none;
+}
+
+.todo-checkbox-wrapper input:checked ~ .todo-text {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+/* Todo Delete Action */
+.btn-delete-task {
+  opacity: 0.3;
+  transition: all var(--transition-fast);
+}
+
+.todo-item:hover .btn-delete-task {
+  opacity: 1;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.empty-icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+
+.empty-icon-box i {
+  width: 28px;
+  height: 28px;
+}
+
+.empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--color-text-main);
+}
+
+.empty-subtitle {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   4. Firebase Setup Modal (連線設定)
+   ========================================================================== */
+.config-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 7, 12, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  display: none; /* Controlled by js */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.config-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+.config-card {
+  max-width: 520px;
+  padding: 35px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.config-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.config-title-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.config-title-area h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.config-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+
+.config-desc strong {
+  color: white;
+}
+
+.config-steps {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-left: 20px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.config-steps li a {
+  color: var(--color-accent-blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.config-steps li a:hover {
+  text-decoration: underline;
+}
+
+.config-form textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  padding: 14px;
+  color: #cbd5e1;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color var(--transition-fast);
+}
+
+.config-form textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.20);
+}
+
+.config-note {
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-floating-config {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition-fast);
+  z-index: 99;
+}
+
+.btn-floating-config:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: rotate(45deg);
+}
+
+/* ==========================================================================
+   Toasts (通知訊息)
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 280px;
+  max-width: 360px;
+  background: rgba(13, 20, 35, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--border-radius-md);
+  padding: 14px 18px;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(120%);
+  animation: toast-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transition: all var(--transition-fast);
+}
+
+.toast.toast-error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast.toast-success {
+  border-left: 4px solid #10b981;
+}
+
+.toast.toast-info {
+  border-left: 4px solid #3b82f6;
+}
+
+.toast-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.toast-error .toast-icon { color: #ef4444; }
+.toast-success .toast-icon { color: #10b981; }
+.toast-info .toast-icon { color: #3b82f6; }
+
+.toast-message {
+  font-size: 0.88rem;
+  color: var(--color-text-main);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@keyframes toast-in {
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+.inline-icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.text-blue {
+  color: var(--color-accent-blue);
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Glassmorphism Shake effect on Error */
+.shake {
+  animation: shake-anim 0.4s ease-in-out;
+}
+
+@keyframes shake-anim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}

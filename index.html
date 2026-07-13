@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Tasks - 跨裝置即時同步待辦清單</title>
+  
+  <!-- Import Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  
+  <!-- Background Elements -->
+  <div class="bg-gradient-bg"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- MAIN CONTAINER -->
+  <main id="app-container">
+
+    <!-- 1. LANDING VIEW (歡迎首頁) -->
+    <section id="landing-view" class="view-section active">
+      <div class="glass-card landing-card">
+        <div class="landing-icon-container">
+          <div class="landing-icon-box">
+            <!-- Custom CSS checklist icon or SVG -->
+            <svg class="landing-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="9" rx="1.5" />
+              <rect x="3" y="15" width="7" height="6" rx="1.5" />
+              <rect x="14" y="3" width="7" height="6" rx="1.5" />
+              <rect x="14" y="12" width="7" height="9" rx="1.5" />
+            </svg>
+          </div>
+        </div>
+        <h1 class="landing-title">Cloud Tasks</h1>
+        <p class="landing-subtitle">跨裝置即時同步，讓效率無所不在</p>
+        <button id="btn-start" class="btn-primary ripple-effect">
+          <span>立即開始使用 </span>
+          <i data-lucide="sparkles" class="icon-sparkles"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. AUTH VIEW (登入 / 註冊頁面) -->
+    <section id="auth-view" class="view-section">
+      <div class="glass-card auth-card">
+        <div class="auth-tabs">
+          <button id="tab-login" class="auth-tab active">登入</button>
+          <button id="tab-signup" class="auth-tab">註冊</button>
+        </div>
+
+        <form id="auth-form" class="auth-form">
+          <div class="input-group">
+            <label for="auth-email">電子信箱</label>
+            <div class="input-wrapper">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input type="email" id="auth-email" placeholder="example@email.com" required autocomplete="email">
+            </div>
+          </div>
+          
+          <div class="input-group">
+            <label for="auth-password">密碼</label>
+            <div class="input-wrapper">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input type="password" id="auth-password" placeholder="請輸入密碼（至少 6 碼）" required autocomplete="current-password">
+            </div>
+          </div>
+
+          <button type="submit" id="btn-auth-submit" class="btn-primary">
+            <span id="auth-submit-text">登入</span>
+            <i data-lucide="arrow-right" class="btn-icon"></i>
+          </button>
+        </form>
+
+        <div class="auth-divider">
+          <span>或</span>
+        </div>
+
+        <button id="btn-guest-login" class="btn-secondary">
+          <i data-lucide="user" class="btn-icon"></i>
+          <span>訪客試用體驗</span>
+        </button>
+
+        <button id="btn-back-landing" class="btn-link">
+          <i data-lucide="chevron-left" class="btn-icon"></i>
+          <span>返回首頁</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. TODO LIST VIEW (待辦事項清單主畫面) -->
+    <section id="todo-view" class="view-section">
+      <div class="glass-card todo-card">
+        
+        <!-- Header -->
+        <header class="todo-header">
+          <div class="logo-area">
+            <div class="logo-icon">
+              <i data-lucide="check-square"></i>
+            </div>
+            <h2>Cloud Tasks</h2>
+          </div>
+          <div class="user-profile">
+            <div class="user-avatar" id="user-avatar-text">U</div>
+            <div class="user-info">
+              <span class="user-name" id="user-display-name">載入中...</span>
+              <span class="user-status" id="user-status-badge">一般會員</span>
+            </div>
+            <button id="btn-logout" class="btn-icon-only" title="登出">
+              <i data-lucide="log-out"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Progress Metrics -->
+        <div class="progress-section">
+          <div class="progress-info">
+            <span class="progress-label">我的任務進度</span>
+            <span class="progress-percentage" id="progress-percentage-text">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <div class="progress-count" id="progress-count-text">0 / 0 已完成</div>
+        </div>
+
+        <!-- Add Task Form -->
+        <form id="todo-form" class="todo-form">
+          <div class="input-wrapper">
+            <input type="text" id="todo-input" placeholder="新增待辦事項..." required autocomplete="off">
+            <button type="submit" class="btn-add" title="新增事項">
+              <i data-lucide="plus"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Task Filters -->
+        <div class="task-filters">
+          <button class="filter-tab active" data-filter="all">全部</button>
+          <button class="filter-tab" data-filter="active">進行中</button>
+          <button class="filter-tab" data-filter="completed">已完成</button>
+        </div>
+
+        <!-- Empty State -->
+        <div id="todo-empty-state" class="empty-state">
+          <div class="empty-icon-box">
+            <i data-lucide="clipboard-list"></i>
+          </div>
+          <p class="empty-title">目前沒有待辦事項</p>
+          <p class="empty-subtitle">試著新增一個事項來開啟高效的一天吧！</p>
+        </div>
+
+        <!-- Tasks List -->
+        <ul id="todo-list" class="todo-list">
+          <!-- Dynamic Todo items will go here -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- 4. FIREBASE SETUP CONFIG MODAL (Firebase 設定視窗) -->
+    <div id="config-modal" class="config-modal">
+      <div class="glass-card config-card">
+        <header class="config-header">
+          <div class="config-title-area">
+            <i data-lucide="database" class="icon-database text-blue"></i>
+            <h3>連線到 Firebase 資料庫</h3>
+          </div>
+        </header>
+        
+        <p class="config-desc">
+          本網頁使用 <strong>Firebase Realtime Database</strong> 與 <strong>Authentication</strong> 進行即時資料庫同步與帳戶功能。請貼上您的 Firebase 網頁 SDK 配置物件 (Firebase Config) 以完成連接。
+        </p>
+
+        <ol class="config-steps">
+          <li>前往 <a href="https://console.firebase.google.com/" target="_blank" rel="noopener">Firebase 主控台</a> 建立專案。</li>
+          <li>在專案中建立一個 <strong>Web 應用程式</strong> 並複製其 <code>firebaseConfig</code>。</li>
+          <li>啟用 <strong>Authentication</strong> (並啟用 Email/Password 及 匿名 登入)。</li>
+          <li>建立 <strong>Realtime Database</strong> 並將規則設定為允許讀寫（或是部署後進行驗證）。</li>
+        </ol>
+
+        <form id="config-form" class="config-form">
+          <div class="input-group">
+            <label for="config-paste">貼上 Firebase Config JavaScript 物件</label>
+            <textarea id="config-paste" rows="8" placeholder='const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "...",
+  databaseURL: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};' required></textarea>
+          </div>
+          <div class="config-actions">
+            <button type="submit" class="btn-primary w-full">
+              <i data-lucide="check" class="btn-icon"></i>
+              <span>儲存並連接資料庫</span>
+            </button>
+          </div>
+        </form>
+
+        <p class="config-note">
+          <i data-lucide="shield-check" class="inline-icon"></i> 
+          您的設定檔將僅儲存在您的瀏覽器本地空間 (LocalStorage)，不會上傳至任何第三方伺服器。
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Floating Action for Config Reset (For demonstration & easy change) -->
+    <button id="btn-reset-config" class="btn-floating-config" title="重新設定 Firebase">
+      <i data-lucide="settings"></i>
+    </button>
+
+  </main>
+
+  <!-- Firebase Scripts (using standard ES Modules inside our app.js) -->
+  <script type="module" src="config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
