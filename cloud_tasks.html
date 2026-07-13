@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Tasks Pro | 專業級跨裝置即時同步待辦系統</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Animate.css for sleek transitions -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 20px rgba(59, 130, 246, 0.4)',
+                        'neon-emerald': '0 0 20px rgba(16, 185, 129, 0.4)',
+                        'neon-rose': '0 0 20px rgba(244, 63, 94, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #0d0b26 0%, #05070f 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar for task list container */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        /* Glassmorphism utility card */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Custom Transitions */
+        .transition-height {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="text-slate-100 flex items-center justify-center p-4 sm:p-6 md:p-8">
+
+    <!-- Ambient glowing backgrounds inspired by image_eff961.png -->
+    <div class="fixed top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed top-1/2 left-2/3 -translate-y-1/2 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <div class="w-full max-w-lg z-10 my-4">
+        
+        <!-- ==================== PAGE 1: SPLASH LANDING (未登入) ==================== -->
+        <div id="landing-page" class="animate__animated animate__fadeIn flex flex-col justify-center items-center">
+            <div class="glass-card w-full rounded-[32px] p-8 text-center flex flex-col items-center justify-center shadow-glass relative overflow-hidden">
+                <!-- Highlight border top glow -->
+                <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+                
+                <!-- Brand Icon based on image_eff961.png -->
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30 animate__animated animate__pulse animate__infinite animate__slow">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </div>
+                
+                <h1 class="text-3xl font-bold tracking-wider text-white mb-2 font-sans">Cloud Tasks <span class="text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded-full font-mono font-semibold uppercase tracking-widest align-middle">Pro</span></h1>
+                <p class="text-slate-400 text-sm mb-10 leading-relaxed font-light">整合番茄工作法、優先級、智能過濾的跨平台雲端待辦系統</p>
+                
+                <button id="btn-login" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 active:scale-[0.98] transition-all duration-300 group">
+                    <span>立即開始使用 ✨</span>
+                    <i class="fa-solid fa-wand-magic-sparkles text-sm group-hover:rotate-12 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== PAGE 2: LOADING SCREEN ==================== -->
+        <div id="loading-page" class="hidden animate__animated animate__fadeIn flex flex-col items-center justify-center p-12">
+            <div class="relative w-16 h-16 mb-4">
+                <div class="absolute inset-0 rounded-full border-4 border-slate-800"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+            </div>
+            <p class="text-slate-400 text-sm tracking-widest animate__animated animate__flash animate__infinite animate__slow">安全加密連線中，加載個人專業面板...</p>
+        </div>
+
+        <!-- ==================== PAGE 3: MAIN TASK DASHBOARD (已登入) ==================== -->
+        <div id="dashboard-page" class="hidden animate__animated animate__fadeIn">
+            
+            <!-- Header Section -->
+            <div class="flex items-center justify-between mb-5 px-1">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20">
+                        <svg class="w-5.5 h-5.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold tracking-wide text-white">任務控制台</h2>
+                        <!-- Synchronizing status widget -->
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-neon-emerald animate-pulse" id="sync-dot"></span>
+                            <span class="text-[10px] text-slate-400 font-mono tracking-wider" id="sync-status">SYNCED: loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Action Tools (Data backup & Logout) -->
+                <div class="flex gap-2">
+                    <button id="btn-export" class="w-10 h-10 rounded-xl bg-slate-900/40 border border-white/5 hover:bg-slate-800/60 text-slate-400 hover:text-blue-400 flex items-center justify-center transition-all duration-300" title="匯出任務備份(JSON)">
+                        <i class="fa-solid fa-file-export text-sm"></i>
+                    </button>
+                    <button id="btn-logout" class="w-10 h-10 rounded-xl bg-slate-900/40 border border-white/5 hover:bg-red-500/20 hover:border-red-500/30 text-slate-400 hover:text-red-400 flex items-center justify-center transition-all duration-300" title="登出並切換帳號">
+                        <i class="fa-solid fa-arrow-right-from-bracket text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pomodoro Focus Timer Widget -->
+            <div class="glass-card rounded-3xl p-5 mb-5 shadow-glass relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-400" id="timer-icon-container">
+                            <i class="fa-solid fa-stopwatch text-lg" id="timer-icon"></i>
+                        </div>
+                        <div>
+                            <span id="timer-label" class="text-xs font-semibold uppercase tracking-wider text-rose-300">專注計時器 (番茄鐘)</span>
+                            <div class="text-2xl font-bold font-mono tracking-wide text-white mt-0.5" id="timer-display">25:00</div>
+                        </div>
+                    </div>
+                    <!-- Timer Controls -->
+                    <div class="flex items-center gap-2">
+                        <button id="btn-timer-type" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-slate-300 transition-all">
+                            工作
+                        </button>
+                        <button id="btn-timer-start" class="w-10 h-10 rounded-full bg-gradient-to-r from-rose-600 to-pink-600 text-white flex items-center justify-center shadow-md active:scale-95 transition-all">
+                            <i class="fa-solid fa-play text-xs" id="timer-start-icon"></i>
+                        </button>
+                        <button id="btn-timer-reset" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-slate-200 flex items-center justify-center active:scale-95 transition-all" title="重設">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Progress Metric Card with Analytics breakdown -->
+            <div class="glass-card rounded-3xl p-6 mb-5 shadow-glass relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <p class="text-slate-400 text-xs font-medium tracking-wider mb-1">今日完成率</p>
+                        <div class="flex items-baseline gap-2">
+                            <h3 class="text-4xl font-extrabold text-white font-mono tracking-tight" id="completion-rate">0%</h3>
+                            <span class="text-xs text-slate-500 font-mono" id="task-ratio-label">(0 / 0 任務)</span>
+                        </div>
+                    </div>
+                    <div class="w-11 h-11 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400" id="trophy-container">
+                        <i class="fa-solid fa-trophy text-lg transition-transform duration-500" id="trophy-icon"></i>
+                    </div>
+                </div>
+                <!-- Interactive Dynamic Progress Bar -->
+                <div class="w-full bg-slate-950/60 rounded-full h-3 overflow-hidden p-[2px] border border-white/5 mb-4">
+                    <div id="progress-bar-fill" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full rounded-full transition-all duration-700 ease-out w-0 shadow-neon-blue"></div>
+                </div>
+                <!-- Mini Analytics Insights Panel -->
+                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5 text-center">
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mb-0.5">高優先</div>
+                        <span id="metric-high-priority" class="text-xs font-bold text-rose-400 font-mono">0</span>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mb-0.5">執行中</div>
+                        <span id="metric-active" class="text-xs font-bold text-amber-400 font-mono">0</span>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-semibold tracking-wider uppercase mb-0.5">已逾期</div>
+                        <span id="metric-overdue" class="text-xs font-bold text-pink-400 font-mono">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Input Form and Expandable Fields -->
+            <div class="glass-card rounded-2xl p-2 mb-4 shadow-glass border border-white/10 transition-all duration-300">
+                <div class="flex items-center gap-2">
+                    <input type="text" id="task-input" placeholder="輸入新任務名稱..." class="flex-1 bg-transparent border-none text-slate-100 placeholder-slate-500 text-sm py-3 px-4 focus:ring-0 focus:outline-none" autocomplete="off">
+                    
+                    <!-- Advanced Panel Toggle Button -->
+                    <button id="btn-toggle-options" class="w-10 h-10 rounded-xl bg-slate-900/40 text-slate-400 hover:text-slate-200 flex items-center justify-center transition-all" title="展開進階選項">
+                        <i class="fa-solid fa-sliders text-sm transition-transform duration-300" id="options-toggle-icon"></i>
+                    </button>
+
+                    <button id="btn-add-task" class="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 active:scale-[0.95] transition-all duration-200">
+                        <i class="fa-solid fa-plus text-base"></i>
+                    </button>
+                </div>
+
+                <!-- Advanced Task Options Drawer -->
+                <div id="advanced-options-panel" class="hidden opacity-0 overflow-hidden px-4 pb-4 pt-2 border-t border-white/5 transition-all duration-300">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
+                        <!-- Priority Picker -->
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1.5">優先順序</label>
+                            <select id="task-priority" class="w-full bg-slate-950/80 border border-white/10 rounded-lg text-xs py-2 px-2.5 text-slate-200 focus:outline-none focus:border-blue-500/50">
+                                <option value="low" selected>🔵 低優先 (Low)</option>
+                                <option value="medium">🟡 中優先 (Medium)</option>
+                                <option value="high">🔴 高優先 (High)</option>
+                            </select>
+                        </div>
+                        <!-- Category Picker -->
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1.5">分類標籤</label>
+                            <input type="text" id="task-category" placeholder="例如：工作, 學習" class="w-full bg-slate-950/80 border border-white/10 rounded-lg text-xs py-2 px-2.5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500/50">
+                        </div>
+                        <!-- Due Date Picker -->
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-1.5">截止日期</label>
+                            <input type="date" id="task-duedate" class="w-full bg-slate-950/80 border border-white/10 rounded-lg text-xs py-1.5 px-2.5 text-slate-200 focus:outline-none focus:border-blue-500/50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filters Container -->
+            <div class="mb-4 flex flex-col sm:flex-row gap-2">
+                <!-- Search Bar -->
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                    <input type="text" id="search-input" placeholder="搜尋任務或分類..." class="w-full bg-slate-950/40 border border-white/5 rounded-xl text-xs pl-9 pr-4 py-2.5 text-slate-300 placeholder-slate-600 focus:outline-none focus:border-white/10">
+                </div>
+                <!-- Filter Tabs -->
+                <div class="flex gap-1 overflow-x-auto pb-1 sm:pb-0">
+                    <button class="filter-tab active px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-neon-blue transition-all" data-tab="all">全部</button>
+                    <button class="filter-tab px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-slate-900/40 border border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all" data-tab="active">進行中</button>
+                    <button class="filter-tab px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-slate-900/40 border border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all" data-tab="completed">已完成</button>
+                    <button class="filter-tab px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-slate-900/40 border border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all" data-tab="high">🔴高優先</button>
+                </div>
+            </div>
+
+            <!-- Task List Holder -->
+            <div id="task-list-container" class="max-h-[380px] overflow-y-auto custom-scrollbar space-y-3 pr-1">
+                <!-- Task rows dynamically injected here -->
+            </div>
+
+            <!-- Empty State Template based on image_eff961.png -->
+            <div id="empty-state" class="hidden flex flex-col items-center justify-center py-14 text-center animate__animated animate__fadeIn">
+                <div class="w-16 h-16 rounded-full bg-slate-900/40 border border-white/5 flex items-center justify-center mb-4 shadow-inner">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xl text-slate-600 animate-pulse"></i>
+                </div>
+                <p class="text-slate-400 text-sm tracking-wider">萬事俱備，只欠任務！</p>
+            </div>
+        </div>
+
+        <!-- Notification Toast Container -->
+        <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    </div>
+
+    <!-- ==================== FIREBASE INFRASTRUCTURE & BUSINESS LOGIC ==================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables with strict fallback to prevent script execution crash
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'cloud-tasks-app-prod';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Gracefully attempt Firebase Init to prevent blocking the UI
+        let app = null;
+        let db = null;
+        let auth = null;
+        let isMockMode = false;
+
+        try {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+            } else {
+                isMockMode = true;
+            }
+        } catch (e) {
+            console.warn("Firebase config could not be parsed, fallback to high-fidelity offline mode enabled.", e);
+            isMockMode = true;
+        }
+
+        // Core App States
+        let currentUser = null;
+        let unsubscribeTasks = null;
+        let localTasks = [];
+        let activeTab = 'all';
+        let searchQuery = '';
+
+        // Pomodoro Timer States
+        let timerInterval = null;
+        let timerSeconds = 1500; // 25 mins
+        let isTimerRunning = false;
+        let currentTimerMode = 'work'; // 'work' or 'break'
+
+        // Mock database state for offline/fallback mode
+        let mockTasks = [
+            { id: "mock-1", text: "💡 探索 Cloud Tasks Pro 的進階控制台", completed: false, createdAt: Date.now() - 3600000, priority: "high", category: "指南", dueDate: "" },
+            { id: "mock-2", text: "☕ 設定一趟 25 分鐘番茄鐘專注系統", completed: true, createdAt: Date.now() - 1800000, priority: "medium", category: "學習", dueDate: "" }
+        ];
+
+        // DOM Nodes Mapping
+        const landingPage = document.getElementById('landing-page');
+        const loadingPage = document.getElementById('loading-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const btnLogin = document.getElementById('btn-login');
+        const btnLogout = document.getElementById('btn-logout');
+        const btnExport = document.getElementById('btn-export');
+        const btnAddTask = document.getElementById('btn-add-task');
+        
+        // Input panels
+        const taskInput = document.getElementById('task-input');
+        const btnToggleOptions = document.getElementById('btn-toggle-options');
+        const advancedOptionsPanel = document.getElementById('advanced-options-panel');
+        const optionsToggleIcon = document.getElementById('options-toggle-icon');
+        const taskPriority = document.getElementById('task-priority');
+        const taskCategory = document.getElementById('task-category');
+        const taskDuedate = document.getElementById('task-duedate');
+        
+        // Filters & Search
+        const searchInput = document.getElementById('search-input');
+        const filterTabs = document.querySelectorAll('.filter-tab');
+
+        // Main views
+        const taskListContainer = document.getElementById('task-list-container');
+        const emptyState = document.getElementById('empty-state');
+        const completionRateLabel = document.getElementById('completion-rate');
+        const taskRatioLabel = document.getElementById('task-ratio-label');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const syncStatusText = document.getElementById('sync-status');
+        const syncDot = document.getElementById('sync-dot');
+        const trophyIcon = document.getElementById('trophy-icon');
+        const trophyContainer = document.getElementById('trophy-container');
+
+        // Analytics elements
+        const metricHighPriority = document.getElementById('metric-high-priority');
+        const metricActive = document.getElementById('metric-active');
+        const metricOverdue = document.getElementById('metric-overdue');
+
+        // Timer elements
+        const timerDisplay = document.getElementById('timer-display');
+        const btnTimerStart = document.getElementById('btn-timer-start');
+        const timerStartIcon = document.getElementById('timer-start-icon');
+        const btnTimerReset = document.getElementById('btn-timer-reset');
+        const btnTimerType = document.getElementById('btn-timer-type');
+        const timerIcon = document.getElementById('timer-icon');
+        const timerIconContainer = document.getElementById('timer-icon-container');
+
+        // Floating premium toasts
+        function showNotification(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-glass border animate__animated animate__fadeInUp ${
+                type === 'success' 
+                ? 'bg-emerald-950/80 border-emerald-500/30 text-emerald-200' 
+                : type === 'error'
+                ? 'bg-rose-950/80 border-rose-500/30 text-rose-200'
+                : 'bg-slate-900/90 border-white/10 text-slate-200'
+            }`;
+            
+            const icon = type === 'success' 
+                ? '<i class="fa-solid fa-circle-check text-emerald-400"></i>' 
+                : type === 'error'
+                ? '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>'
+                : '<i class="fa-solid fa-circle-info text-blue-400"></i>';
+
+            toast.innerHTML = `
+                ${icon}
+                <span class="text-xs font-medium tracking-wide">${message}</span>
+            `;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.replace('animate__fadeInUp', 'animate__fadeOutDown');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }, 3500);
+        }
+
+        // Handles switching between application screens
+        function navigateTo(screenId) {
+            landingPage.classList.add('hidden');
+            loadingPage.classList.add('hidden');
+            dashboardPage.classList.add('hidden');
+
+            if (screenId === 'landing') landingPage.classList.remove('hidden');
+            else if (screenId === 'loading') loadingPage.classList.remove('hidden');
+            else if (screenId === 'dashboard') dashboardPage.classList.remove('hidden');
+        }
+
+        // Show/hide advanced task creation settings
+        btnToggleOptions.addEventListener('click', () => {
+            const isHidden = advancedOptionsPanel.classList.contains('hidden');
+            if (isHidden) {
+                advancedOptionsPanel.classList.remove('hidden');
+                setTimeout(() => {
+                    advancedOptionsPanel.classList.remove('opacity-0');
+                    optionsToggleIcon.classList.add('rotate-180');
+                }, 50);
+            } else {
+                advancedOptionsPanel.classList.add('opacity-0');
+                optionsToggleIcon.classList.remove('rotate-180');
+                setTimeout(() => {
+                    advancedOptionsPanel.classList.add('hidden');
+                }, 300);
+            }
+        });
+
+        // Centralized Authentication Sequence with seamless fallback to prevent stuck screens
+        async function authenticateUser() {
+            navigateTo('loading');
+            await new Promise(resolve => setTimeout(resolve, 800)); // Smooth loading sensation
+
+            if (isMockMode) {
+                // If in mock mode, bypass real auth entirely and enter the simulator
+                currentUser = { uid: 'offline_sandbox' };
+                navigateTo('dashboard');
+                bindRealtimeTasks(currentUser.uid);
+                showNotification("已啟動本機預覽模式 (模擬同步已就緒) ✨", "success");
+                return;
+            }
+
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Firebase auth failed, fallback to offline sandbox mode:", error);
+                isMockMode = true;
+                currentUser = { uid: 'offline_fallback_user' };
+                navigateTo('dashboard');
+                bindRealtimeTasks(currentUser.uid);
+                showNotification("已切換為本機模式運作 (Firebase 未配置) 🛠️", "info");
+            }
+        }
+
+        // Log out clean-up
+        async function terminateSession() {
+            if (unsubscribeTasks) {
+                unsubscribeTasks();
+                unsubscribeTasks = null;
+            }
+            
+            if (isMockMode) {
+                currentUser = null;
+                localTasks = [];
+                renderTasks();
+                navigateTo('landing');
+                showNotification("已關閉本機工作階段", "info");
+                return;
+            }
+
+            try {
+                await signOut(auth);
+                localTasks = [];
+                renderTasks();
+                showNotification("帳號已登出，已關閉同步", "info");
+            } catch (error) {
+                showNotification("登出程序發生異常", "error");
+            }
+        }
+
+        function bindRealtimeTasks(userId) {
+            if (unsubscribeTasks) unsubscribeTasks();
+
+            if (isMockMode) {
+                // Fetch simulated local database
+                localTasks = [...mockTasks];
+                renderTasks();
+                
+                // Set premium indicators to show offline mode status (Blue light)
+                syncStatusText.textContent = `LOCAL STORAGE (OFFLINE)`;
+                syncDot.classList.remove('bg-emerald-500', 'shadow-neon-emerald', 'bg-rose-500', 'shadow-neon-rose');
+                syncDot.classList.add('bg-blue-500', 'shadow-neon-blue');
+                return;
+            }
+
+            // Rule 1: Custom pathing for private user space
+            // PATH: /artifacts/{appId}/users/{userId}/tasks
+            const tasksCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'tasks');
+            
+            // Rule 2: Fetch all records without ordering/where on server level, then sort client-side (avoid index requirement)
+            unsubscribeTasks = onSnapshot(tasksCollectionRef, (snapshot) => {
+                const updatedList = [];
+                snapshot.forEach((docSnap) => {
+                    updatedList.push({
+                        id: docSnap.id,
+                        ...docSnap.data()
+                    });
+                });
+
+                // Client-side Sort (CreatedAt Ascending)
+                updatedList.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                
+                localTasks = updatedList;
+                renderTasks();
+                
+                // Set online presence display (Green light)
+                const displayUid = userId.substring(0, 8) + '...';
+                syncStatusText.textContent = `SYNCED: ${displayUid}`;
+                syncDot.classList.remove('bg-rose-500', 'shadow-neon-rose', 'bg-blue-500', 'shadow-neon-blue');
+                syncDot.classList.add('bg-emerald-500', 'shadow-neon-emerald');
+            }, (error) => {
+                console.error("Firestore loading error:", error);
+                showNotification("雲端資料加載失敗，自動轉換為本機模式儲存", "error");
+                isMockMode = true;
+                bindRealtimeTasks(userId);
+            });
+        }
+
+        // Write Operation (Add)
+        async function handleAddTask() {
+            const taskText = taskInput.value.trim();
+            if (!taskText) {
+                showNotification("任務名稱不能為空白哦！", "info");
+                return;
+            }
+
+            // Collect advanced data values
+            const priority = taskPriority.value || 'low';
+            const category = taskCategory.value.trim() || '';
+            const dueDate = taskDuedate.value || '';
+
+            btnAddTask.disabled = true;
+
+            try {
+                if (isMockMode) {
+                    const newMockItem = {
+                        id: 'mock-' + Date.now(),
+                        text: taskText,
+                        completed: false,
+                        createdAt: Date.now(),
+                        priority: priority,
+                        category: category,
+                        dueDate: dueDate
+                    };
+                    mockTasks.push(newMockItem);
+                    localTasks = [...mockTasks];
+                    renderTasks();
+                    showNotification("成功新增待辦事項 ✨", "success");
+                } else {
+                    if (!auth.currentUser) {
+                        showNotification("工作階段已過期，請重新登入", "error");
+                        return;
+                    }
+                    const userId = auth.currentUser.uid;
+                    const targetCollection = collection(db, 'artifacts', appId, 'users', userId, 'tasks');
+
+                    await addDoc(targetCollection, {
+                        text: taskText,
+                        completed: false,
+                        createdAt: Date.now(),
+                        priority: priority,
+                        category: category,
+                        dueDate: dueDate
+                    });
+                    showNotification("成功新增雲端待辦事項 ✨", "success");
+                }
+
+                // Reset Fields
+                taskInput.value = '';
+                taskCategory.value = '';
+                taskDuedate.value = '';
+                taskPriority.value = 'low';
+
+                // Close advanced options panel softly
+                if (!advancedOptionsPanel.classList.contains('hidden')) {
+                    advancedOptionsPanel.classList.add('opacity-0');
+                    optionsToggleIcon.classList.remove('rotate-180');
+                    setTimeout(() => {
+                        advancedOptionsPanel.classList.add('hidden');
+                    }, 300);
+                }
+
+            } catch (error) {
+                console.error("Create task error: ", error);
+                showNotification("新增失敗，請再試一次", "error");
+            } finally {
+                btnAddTask.disabled = false;
+                taskInput.focus();
+            }
+        }
+
+        // Update Operation (Toggle completion)
+        async function handleToggleTask(taskId, currentStatus) {
+            try {
+                if (isMockMode) {
+                    const target = mockTasks.find(t => t.id === taskId);
+                    if (target) {
+                        target.completed = !currentStatus;
+                        localTasks = [...mockTasks];
+                        renderTasks();
+                        if (!currentStatus) {
+                            showNotification("太棒了！完成了一項任務 🎯", "success");
+                        }
+                    }
+                } else {
+                    if (!auth.currentUser) return;
+                    const userId = auth.currentUser.uid;
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'tasks', taskId);
+
+                    await updateDoc(docRef, {
+                        completed: !currentStatus
+                    });
+                    if (!currentStatus) {
+                        showNotification("太棒了！完成了一項任務 🎯", "success");
+                    }
+                }
+            } catch (error) {
+                showNotification("無法更新狀態", "error");
+            }
+        }
+
+        // Delete Operation
+        async function handleDeleteTask(taskId) {
+            try {
+                if (isMockMode) {
+                    mockTasks = mockTasks.filter(t => t.id !== taskId);
+                    localTasks = [...mockTasks];
+                    renderTasks();
+                    showNotification("任務已成功移除", "info");
+                } else {
+                    if (!auth.currentUser) return;
+                    const userId = auth.currentUser.uid;
+                    const docRef = doc(db, 'artifacts', appId, 'users', userId, 'tasks', taskId);
+
+                    await deleteDoc(docRef);
+                    showNotification("任務已成功移除", "info");
+                }
+            } catch (error) {
+                showNotification("無法刪除任務", "error");
+            }
+        }
+
+        // Render view engine
+        function renderTasks() {
+            taskListContainer.innerHTML = '';
+            
+            // Comprehensive Local Statistics Extraction
+            const totalCount = localTasks.length;
+            const completedCount = localTasks.filter(t => t.completed).length;
+            const highPriorityCount = localTasks.filter(t => t.priority === 'high' && !t.completed).length;
+            const activeCount = totalCount - completedCount;
+            
+            // Check for overdue items
+            const todayStr = new Date().toISOString().split('T')[0];
+            const overdueCount = localTasks.filter(t => !t.completed && t.dueDate && t.dueDate < todayStr).length;
+
+            // Render stats badges
+            metricHighPriority.textContent = highPriorityCount;
+            metricActive.textContent = activeCount;
+            metricOverdue.textContent = overdueCount;
+
+            // Apply Client-Side Filters & Searching (Rule 2 Optimization)
+            const filtered = localTasks.filter(task => {
+                // Search query match
+                const matchesSearch = searchQuery === '' || 
+                    task.text.toLowerCase().includes(searchQuery) ||
+                    (task.category && task.category.toLowerCase().includes(searchQuery));
+                
+                // Tab filter match
+                let matchesTab = true;
+                if (activeTab === 'active') matchesTab = !task.completed;
+                else if (activeTab === 'completed') matchesTab = task.completed;
+                else if (activeTab === 'high') matchesTab = task.priority === 'high';
+
+                return matchesSearch && matchesTab;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(task => {
+                const row = document.createElement('div');
+                row.className = `glass-card p-4 rounded-2xl flex flex-col gap-2.5 border border-white/5 transition-all duration-300 hover:border-white/10 animate__animated animate__fadeInUp ${task.completed ? 'bg-slate-900/20 opacity-60' : ''}`;
+                
+                // Determine priority styling
+                let priorityLabel = '低';
+                let priorityBadgeColor = 'bg-blue-500/15 text-blue-400 border-blue-500/20';
+                if (task.priority === 'high') {
+                    priorityLabel = '高優先';
+                    priorityBadgeColor = 'bg-rose-500/15 text-rose-400 border-rose-500/20 shadow-neon-rose/10';
+                } else if (task.priority === 'medium') {
+                    priorityLabel = '中優先';
+                    priorityBadgeColor = 'bg-amber-500/15 text-amber-400 border-amber-500/20';
+                }
+
+                // Check overdue flag for individual task
+                const isOverdue = !task.completed && task.dueDate && task.dueDate < todayStr;
+                const dueDateDisplay = task.dueDate ? `📅 ${task.dueDate}` : '';
+
+                row.innerHTML = `
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3.5 flex-1 min-w-0">
+                            <!-- Custom styled interactive checkbox -->
+                            <button class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 select-none flex-shrink-0 ${
+                                task.completed 
+                                ? 'bg-blue-600 border-blue-600 text-white shadow-neon-blue' 
+                                : 'border-slate-600 hover:border-blue-500 text-transparent'
+                            }" data-id="${task.id}" data-status="${task.completed}" onclick="this.dispatchEvent(new CustomEvent('toggle-task', {bubbles: true}))">
+                                <i class="fa-solid fa-check text-xs font-black"></i>
+                            </button>
+                            <!-- Task text -->
+                            <span class="text-sm truncate select-none ${task.completed ? 'line-through text-slate-500 font-normal' : 'text-slate-100 font-medium'}">
+                                ${escapeHtml(task.text)}
+                            </span>
+                        </div>
+                        <!-- Delete Button -->
+                        <button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-red-500/10 text-slate-500 hover:text-red-400 active:scale-95 transition-all duration-200" data-id="${task.id}" onclick="this.dispatchEvent(new CustomEvent('delete-task', {bubbles: true}))">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Advanced Metadata Badges (Only render when attributes exist) -->
+                    <div class="flex flex-wrap items-center gap-2 pl-9.5 text-[10px]">
+                        <!-- Priority Badge -->
+                        <span class="px-2 py-0.5 rounded-md border ${priorityBadgeColor}">
+                            ${priorityLabel}
+                        </span>
+                        <!-- Category Badge -->
+                        ${task.category ? `
+                        <span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-white/5 flex items-center gap-1">
+                            <i class="fa-solid fa-tag text-[8px] text-slate-400"></i> ${escapeHtml(task.category)}
+                        </span>` : ''}
+                        <!-- Due Date Badge with Overdue Check -->
+                        ${task.dueDate ? `
+                        <span class="px-2 py-0.5 rounded-md border ${isOverdue ? 'bg-rose-500/15 text-rose-300 border-rose-500/30' : 'bg-slate-800 text-slate-300 border-white/5'}">
+                            ${dueDateDisplay} ${isOverdue ? '(已逾期)' : ''}
+                        </span>` : ''}
+                    </div>
+                `;
+                
+                taskListContainer.appendChild(row);
+            });
+
+            // Calculate completion rate metrics
+            const rate = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+            updateMetrics(rate, completedCount, totalCount);
+        }
+
+        // Helper function to update visuals and percentage
+        function updateMetrics(rate, completed, total) {
+            completionRateLabel.textContent = `${rate}%`;
+            taskRatioLabel.textContent = `(${completed} / ${total} 任務)`;
+            progressBarFill.style.width = `${rate}%`;
+
+            if (rate === 100 && total > 0) {
+                trophyIcon.className = 'fa-solid fa-trophy text-lg text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.6)] scale-125';
+                trophyContainer.className = 'w-11 h-11 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/30 animate-bounce';
+            } else {
+                trophyIcon.className = 'fa-solid fa-trophy text-lg text-slate-400';
+                trophyContainer.className = 'w-11 h-11 rounded-full bg-blue-500/10 flex items-center justify-center';
+            }
+        }
+
+        // Escaping HTML inputs safely
+        function escapeHtml(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Format seconds into minutes & seconds display
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function updateTimerUI() {
+            timerDisplay.textContent = formatTime(timerSeconds);
+        }
+
+        function playTimerNotification() {
+            // High efficiency synth tone via native API (No URL dependency)
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch(e) {
+                console.log("Audio feedback error:", e);
+            }
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                // Pause timer
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                timerStartIcon.className = 'fa-solid fa-play text-xs';
+                timerIcon.classList.remove('animate-spin');
+                showNotification("番茄鐘已暫停", "info");
+            } else {
+                // Start timer
+                isTimerRunning = true;
+                timerStartIcon.className = 'fa-solid fa-pause text-xs';
+                timerIcon.classList.add('animate-spin');
+                showNotification("番茄鐘專注開始！衝刺吧！", "success");
+
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerUI();
+                    } else {
+                        // Timer completed
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        timerStartIcon.className = 'fa-solid fa-play text-xs';
+                        timerIcon.classList.remove('animate-spin');
+                        playTimerNotification();
+
+                        if (currentTimerMode === 'work') {
+                            showNotification("做得太棒了！一個工作番茄結束，開始休息一下吧 ☕", "success");
+                            switchTimerMode('break');
+                        } else {
+                            showNotification("休息結束！準備好開始下一波工作了嗎？ 💪", "success");
+                            switchTimerMode('work');
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function switchTimerMode(mode) {
+            currentTimerMode = mode;
+            if (mode === 'work') {
+                timerSeconds = 1500; // 25 mins
+                btnTimerType.textContent = '工作';
+                btnTimerType.className = 'px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-slate-300 transition-all';
+                timerIconContainer.className = 'w-10 h-10 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-400';
+            } else {
+                timerSeconds = 300; // 5 mins
+                btnTimerType.textContent = '休息';
+                btnTimerType.className = 'px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-xs font-semibold text-emerald-300 transition-all';
+                timerIconContainer.className = 'w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400';
+            }
+            updateTimerUI();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerStartIcon.className = 'fa-solid fa-play text-xs';
+            timerIcon.classList.remove('animate-spin');
+            switchTimerMode(currentTimerMode);
+        }
+
+        // Setup Search Listener
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            renderTasks();
+        });
+
+        // Filter tab triggers
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => {
+                    t.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-neon-blue');
+                    t.classList.add('bg-slate-900/40', 'border-white/5', 'text-slate-400');
+                });
+                tab.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-neon-blue');
+                tab.classList.remove('bg-slate-900/40', 'border-white/5', 'text-slate-400');
+                
+                activeTab = tab.dataset.tab;
+                renderTasks();
+            });
+        });
+
+        // Export tasks to clipboard/download as file
+        btnExport.addEventListener('click', () => {
+            if (localTasks.length === 0) {
+                showNotification("目前沒有任務可以匯出哦！", "info");
+                return;
+            }
+            try {
+                const dataStr = JSON.stringify(localTasks, null, 2);
+                
+                // Copy to clipboard fallback mechanism
+                const el = document.createElement('textarea');
+                el.value = dataStr;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+
+                showNotification("已複製所有任務備份(JSON格式)到剪貼簿！", "success");
+            } catch (err) {
+                showNotification("資料封裝失敗", "error");
+            }
+        });
+
+        // Event delegation on task rows
+        taskListContainer.addEventListener('toggle-task', (e) => {
+            const btn = e.target;
+            const taskId = btn.dataset.id;
+            const currentStatus = btn.dataset.status === 'true';
+            handleToggleTask(taskId, currentStatus);
+        });
+
+        taskListContainer.addEventListener('delete-task', (e) => {
+            const btn = e.target;
+            const taskId = btn.dataset.id;
+            handleDeleteTask(taskId);
+        });
+
+        // Click login trigger
+        btnLogin.addEventListener('click', () => {
+            authenticateUser();
+        });
+
+        // Click logout trigger
+        btnLogout.addEventListener('click', () => {
+            terminateSession();
+        });
+
+        // Add task handlers
+        btnAddTask.addEventListener('click', handleAddTask);
+        taskInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleAddTask();
+        });
+
+        // Timer Event Bindings
+        btnTimerStart.addEventListener('click', toggleTimer);
+        btnTimerReset.addEventListener('click', resetTimer);
+        btnTimerType.addEventListener('click', () => {
+            const nextMode = currentTimerMode === 'work' ? 'break' : 'work';
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerStartIcon.className = 'fa-solid fa-play text-xs';
+            timerIcon.classList.remove('animate-spin');
+            switchTimerMode(nextMode);
+        });
+
+        // Setup real auth state tracking if initialized
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
+                    navigateTo('dashboard');
+                    bindRealtimeTasks(user.uid);
+                } else {
+                    currentUser = null;
+                    navigateTo('landing');
+                }
+            });
+        } else {
+            // Immediately direct to landing screen for the offline/mock version
+            navigateTo('landing');
+        }
+
+        // Start initialization on window load
+        window.onload = function() {
+            updateTimerUI();
+        };
+
+    </script>
+</body>
+</html>
